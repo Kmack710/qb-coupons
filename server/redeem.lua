@@ -12,7 +12,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
         local license = xPlayer.PlayerData.license
         if status == 0 then 
             if type == 'money' then
-                xPlayer.Functions.AddMoney("bank", amount)
+                xPlayer.Functions.AddMoney(Config.MoneyType, amount)
                 TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
                 QBCore.Functions.ExecuteSql(false, "UPDATE `codes` SET status = 1, usedby = '"..license.."' WHERE `code` = '"..code.."'")
             else
