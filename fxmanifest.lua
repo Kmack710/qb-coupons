@@ -8,6 +8,6 @@ version '1.0.0'
 server_script 'server/redeem.lua'
 
 shared_scripts { 
-	'@710-core/import.lua',
+	'@qb-core/import.lua',
 	'config.lua'
 }
