@@ -16,8 +16,4 @@
 
 `/redeem un$i9KuZmV` // redeems code
 
-- You can watch the Video for a better idea. 
-
-#### Follow me up to stay tuned with Upcoming Releases.
-
 ## Was originally made by OSM but he refuses to change anything to the Non-leaked qbcore ... so Kmack converted it ... Thanks for not putting a LICENSE on this one lol 
