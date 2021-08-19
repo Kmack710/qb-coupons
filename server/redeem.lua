@@ -3,29 +3,43 @@ local stringlength = Config.Length
 
 QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emter the Code Given"}}, true, function(src, args)
     exports['ghmattimysql']:execute('SELECT * FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
-        local xPlayer = QBCore.Functions.GetPlayer(src)
-        local code = result[1].code
-        local type = result[1].type
-        local amount = result[1].amount
-        local status = result[1].status
+        if (result[1]) ~= nil then
+            local xPlayer = QBCore.Functions.GetPlayer(src)
+            local code = result[1].code
+            local type = result[1].type
+            local amount = result[1].amount
+            local status = result[1].status
 
-        local license = xPlayer.PlayerData.license
-        if status == 0 then 
-            if type == 'money' then
-                xPlayer.Functions.AddMoney(Config.MoneyType, amount)
-                TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
-                QBCore.Functions.ExecuteSql(false, "UPDATE `codes` SET status = 1, usedby = '"..license.."' WHERE `code` = '"..code.."'")
+            local license = xPlayer.PlayerData.license
+            if status == 0 then 
+                if type == 'money' then
+                    xPlayer.Functions.AddMoney(Config.MoneyType, amount)
+                    TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
+                    exports.ghmattimysql:execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
+                        ['@status'] = 1,
+                        ['@usedby'] = xPlayer.PlayerData.license,
+                        ['@code'] = code
+                    })
+                else
+                    xPlayer.Functions.AddItem(type, amount)
+                    TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
+                    exports.ghmattimysql:execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
+                        ['@status'] = 1,
+                        ['@usedby'] = xPlayer.PlayerData.license,
+                        ['@code'] = code
+                    })
+                end
             else
-                xPlayer.Functions.AddItem(type, amount)
-                TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
-                QBCore.Functions.ExecuteSql(false, "UPDATE `codes` SET status = 1, usedby = '"..license.."' WHERE `code` = '"..code.."'")
+                TriggerClientEvent('QBCore:Notify', src, "Code has been already Redeemed!")
             end
+        
+        
         else
-            TriggerClientEvent('QBCore:Notify', src, "Code has been already Redeemed!")
-        end
+            TriggerClientEvent('QBCore:Notify', src, "Code is not valid! - Codes are case Sensitive!")          
+        end       
         -- exports['ghmattimysql']:execute('DELETE FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
-        end)
     end)
+end)
 
 
 QBCore.Commands.Add("createcode", "Create a Redeemable Code", {{name="type", help="money / [Item Name]"}, {name="amount", help="Amount of Money or Item"}}, true, function(src, args)
@@ -54,8 +68,13 @@ QBCore.Commands.Add("createcode", "Create a Redeemable Code", {{name="type", hel
 
             local message = 'Code Generated - '..output..''
 			TriggerClientEvent('chatMessage', src, "SYSTEM ", "normal", message)
-		    QBCore.Functions.ExecuteSql(true, "INSERT INTO `codes` (`code`, `type`, `amount`, `status`, `madeby`) VALUES ('"..output.."', '"..type.."', '"..amount.."', 0, '"..license.."')")
-
+            exports.ghmattimysql:execute('INSERT INTO codes (code, type, amount, status, madeby) VALUES (@output, @type, @amount, @status, @madeby)', {
+                ['@output'] = output,
+                ['@type'] = type,
+                ['@amount'] = amount,
+                ['@status'] = 0,
+                ['@madeby'] = xPlayer.PlayerData.license,
+            })
         end
 
 end, allowedrole)
