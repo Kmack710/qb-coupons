@@ -15,7 +15,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
                 if type == 'money' then
                     xPlayer.Functions.AddMoney(Config.MoneyType, amount)
                     TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
-                    exports.oxmysql:fetch('SELECT codes SET status=@status, usedby=@usedby WHERE code=@code', {
+                    exports.oxmysql:execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
                         ['@status'] = 1,
                         ['@usedby'] = xPlayer.PlayerData.license,
                         ['@code'] = code
@@ -23,7 +23,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
                 else
                     xPlayer.Functions.AddItem(type, amount)
                     TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
-                    exports.oxmysql:fetch('SELECT codes SET status=@status, usedby=@usedby WHERE code=@code', {
+                    exports.oxmysql:execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
                         ['@status'] = 1,
                         ['@usedby'] = xPlayer.PlayerData.license,
                         ['@code'] = code
