@@ -37,7 +37,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
         else
             TriggerClientEvent('QBCore:Notify', src, "Code is not valid! - Codes are case Sensitive!")          
         end       
-        -- exports['ghmattimysql']:execute('DELETE FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
+        -- exports.oxmysql:execute('DELETE FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
     end)
 end)
 
