@@ -1,5 +1,5 @@
 CREATE TABLE `codes` (
-	`code` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`code` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_general_ci',
 	`type` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_general_ci',
 	`amount` INT(11) NOT NULL,
 	`status` INT(11) NULL DEFAULT '0',
