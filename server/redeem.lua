@@ -15,7 +15,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
                 if type == 'money' then
                     xPlayer.Functions.AddMoney(Config.MoneyType, amount)
                     TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
-                    MySQL.Async.execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
+                    MySQL.Async.query('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
                         ['@status'] = 1,
                         ['@usedby'] = xPlayer.PlayerData.license,
                         ['@code'] = code
@@ -23,7 +23,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
                 else
                     xPlayer.Functions.AddItem(type, amount)
                     TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
-                    MySQL.Async.execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
+                    MySQL.Async.query('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
                         ['@status'] = 1,
                         ['@usedby'] = xPlayer.PlayerData.license,
                         ['@code'] = code
@@ -37,7 +37,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
         else
             TriggerClientEvent('QBCore:Notify', src, "Code is not valid! - Codes are case Sensitive!")          
         end       
-        -- MySQL.Async.execute('DELETE FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
+        -- MySQL.Async.query('DELETE FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
     end)
 end)
 
