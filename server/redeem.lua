@@ -2,7 +2,7 @@ local allowedrole = Config.AllowedRole
 local stringlength = Config.Length
 
 QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emter the Code Given"}}, true, function(src, args)
-    exports.oxmysql:fetch('SELECT * FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
+    MySQL.Async.fetchAll('SELECT * FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
         if (result[1]) ~= nil then
             local xPlayer = QBCore.Functions.GetPlayer(src)
             local code = result[1].code
@@ -15,7 +15,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
                 if type == 'money' then
                     xPlayer.Functions.AddMoney(Config.MoneyType, amount)
                     TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
-                    exports.oxmysql:execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
+                    MySQL.Async.execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
                         ['@status'] = 1,
                         ['@usedby'] = xPlayer.PlayerData.license,
                         ['@code'] = code
@@ -23,7 +23,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
                 else
                     xPlayer.Functions.AddItem(type, amount)
                     TriggerClientEvent('QBCore:Notify', src, "Succsesfully Redeemed A Code")
-                    exports.oxmysql:execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
+                    MySQL.Async.execute('UPDATE codes SET status=@status, usedby=@usedby WHERE code=@code', {
                         ['@status'] = 1,
                         ['@usedby'] = xPlayer.PlayerData.license,
                         ['@code'] = code
@@ -37,7 +37,7 @@ QBCore.Commands.Add("redeem", "Redeem a coupon code.", {{name="Code", help="Emte
         else
             TriggerClientEvent('QBCore:Notify', src, "Code is not valid! - Codes are case Sensitive!")          
         end       
-        -- exports.oxmysql:execute('DELETE FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
+        -- MySQL.Async.execute('DELETE FROM codes WHERE code = @playerCode', {['@playerCode'] = args[1]}, function(result)
     end)
 end)
 
@@ -68,7 +68,7 @@ QBCore.Commands.Add("createcode", "Create a Redeemable Code", {{name="type", hel
 
             local message = 'Code Generated - '..output..''
 			TriggerClientEvent('chatMessage', src, "SYSTEM ", "normal", message)
-            exports.oxmysql:insert('INSERT INTO codes (code, type, amount, status, madeby) VALUES (@output, @type, @amount, @status, @madeby)', {
+           MySQL.Async.insert('INSERT INTO codes (code, type, amount, status, madeby) VALUES (@output, @type, @amount, @status, @madeby)', {
                 ['@output'] = output,
                 ['@type'] = type,
                 ['@amount'] = amount,
